@@ -1,0 +1,56 @@
+[
+  {
+    "name": "Balanced",
+    "settings": {
+      "detectionMode": "binary",
+      "threshold": 160,
+      "motionDifferenceThreshold": 28,
+      "edgeThreshold": 40,
+      "minimumBlobArea": 20,
+      "maximumBlobArea": 25000,
+      "downsampleFactor": 4,
+      "blurRadius": 1,
+      "maxTrackingDistance": 0.18,
+      "trailLength": 10,
+      "showBoundingBoxes": true,
+      "showTrails": true,
+      "showDebugInfo": true
+    }
+  },
+  {
+    "name": "Motion",
+    "settings": {
+      "detectionMode": "motion",
+      "threshold": 160,
+      "motionDifferenceThreshold": 24,
+      "edgeThreshold": 40,
+      "minimumBlobArea": 16,
+      "maximumBlobArea": 18000,
+      "downsampleFactor": 4,
+      "blurRadius": 1,
+      "maxTrackingDistance": 0.16,
+      "trailLength": 12,
+      "showBoundingBoxes": true,
+      "showTrails": true,
+      "showDebugInfo": true
+    }
+  },
+  {
+    "name": "Edges",
+    "settings": {
+      "detectionMode": "edge",
+      "threshold": 160,
+      "motionDifferenceThreshold": 28,
+      "edgeThreshold": 30,
+      "minimumBlobArea": 12,
+      "maximumBlobArea": 12000,
+      "downsampleFactor": 3,
+      "blurRadius": 0,
+      "maxTrackingDistance": 0.14,
+      "trailLength": 8,
+      "showBoundingBoxes": true,
+      "showTrails": false,
+      "showDebugInfo": true
+    }
+  }
+]

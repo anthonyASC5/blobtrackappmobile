@@ -1,0 +1,503 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		300000000000000000000001 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000001 /* AppDelegate.swift */; };
+		300000000000000000000002 /* BlobTrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000002 /* BlobTrackerApp.swift */; };
+		300000000000000000000003 /* Blob.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000005 /* Blob.swift */; };
+		300000000000000000000004 /* FrameData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000006 /* FrameData.swift */; };
+		300000000000000000000005 /* TrackingSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000007 /* TrackingSettings.swift */; };
+		300000000000000000000006 /* BlobTrackingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000008 /* BlobTrackingViewModel.swift */; };
+		300000000000000000000007 /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000009 /* CameraViewModel.swift */; };
+		300000000000000000000008 /* ExportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000A /* ExportViewModel.swift */; };
+		300000000000000000000009 /* VideoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000B /* VideoViewModel.swift */; };
+		30000000000000000000000A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000C /* ContentView.swift */; };
+		30000000000000000000000B /* CameraControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000D /* CameraControls.swift */; };
+		30000000000000000000000C /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000E /* CameraView.swift */; };
+		30000000000000000000000D /* BlobOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000F /* BlobOverlayView.swift */; };
+		30000000000000000000000E /* DebugOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000010 /* DebugOverlayView.swift */; };
+		30000000000000000000000F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000011 /* SettingsView.swift */; };
+		300000000000000000000010 /* TimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000012 /* TimelineView.swift */; };
+		300000000000000000000011 /* VideoPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000013 /* VideoPickerView.swift */; };
+		300000000000000000000012 /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000014 /* VideoPlayerView.swift */; };
+		300000000000000000000013 /* CameraManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000015 /* CameraManager.swift */; };
+		300000000000000000000014 /* FrameCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000016 /* FrameCapture.swift */; };
+		300000000000000000000015 /* FrameWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000017 /* FrameWriter.swift */; };
+		300000000000000000000016 /* VideoExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000018 /* VideoExporter.swift */; };
+		300000000000000000000017 /* MetalRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000019 /* MetalRenderer.swift */; };
+		300000000000000000000018 /* OverlayRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000001A /* OverlayRenderer.swift */; };
+		300000000000000000000019 /* BlobDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000001B /* BlobDetector.swift */; };
+		30000000000000000000001A /* BlobTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000001C /* BlobTracker.swift */; };
+		30000000000000000000001B /* MotionAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000001D /* MotionAnalyzer.swift */; };
+		30000000000000000000001C /* FrameExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000001E /* FrameExtractor.swift */; };
+		30000000000000000000001D /* VideoLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000001F /* VideoLoader.swift */; };
+		30000000000000000000001E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000020 /* Constants.swift */; };
+		30000000000000000000001F /* ImageProcessing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000021 /* ImageProcessing.swift */; };
+		300000000000000000000020 /* MathUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000022 /* MathUtils.swift */; };
+		300000000000000000000021 /* PixelBuffer+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000023 /* PixelBuffer+Extensions.swift */; };
+		300000000000000000000022 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000004 /* Assets.xcassets */; };
+		300000000000000000000023 /* Presets.json in Resources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000024 /* Presets.json */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		000000000000000000000008 /* BlobTrackerApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlobTrackerApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		200000000000000000000001 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		200000000000000000000002 /* BlobTrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlobTrackerApp.swift; sourceTree = "<group>"; };
+		200000000000000000000003 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		200000000000000000000004 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		200000000000000000000005 /* Blob.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Blob.swift; sourceTree = "<group>"; };
+		200000000000000000000006 /* FrameData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameData.swift; sourceTree = "<group>"; };
+		200000000000000000000007 /* TrackingSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingSettings.swift; sourceTree = "<group>"; };
+		200000000000000000000008 /* BlobTrackingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlobTrackingViewModel.swift; sourceTree = "<group>"; };
+		200000000000000000000009 /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
+		20000000000000000000000A /* ExportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportViewModel.swift; sourceTree = "<group>"; };
+		20000000000000000000000B /* VideoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewModel.swift; sourceTree = "<group>"; };
+		20000000000000000000000C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		20000000000000000000000D /* CameraControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraControls.swift; sourceTree = "<group>"; };
+		20000000000000000000000E /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		20000000000000000000000F /* BlobOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlobOverlayView.swift; sourceTree = "<group>"; };
+		200000000000000000000010 /* DebugOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugOverlayView.swift; sourceTree = "<group>"; };
+		200000000000000000000011 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		200000000000000000000012 /* TimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineView.swift; sourceTree = "<group>"; };
+		200000000000000000000013 /* VideoPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPickerView.swift; sourceTree = "<group>"; };
+		200000000000000000000014 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
+		200000000000000000000015 /* CameraManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraManager.swift; sourceTree = "<group>"; };
+		200000000000000000000016 /* FrameCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameCapture.swift; sourceTree = "<group>"; };
+		200000000000000000000017 /* FrameWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameWriter.swift; sourceTree = "<group>"; };
+		200000000000000000000018 /* VideoExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoExporter.swift; sourceTree = "<group>"; };
+		200000000000000000000019 /* MetalRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalRenderer.swift; sourceTree = "<group>"; };
+		20000000000000000000001A /* OverlayRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayRenderer.swift; sourceTree = "<group>"; };
+		20000000000000000000001B /* BlobDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlobDetector.swift; sourceTree = "<group>"; };
+		20000000000000000000001C /* BlobTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlobTracker.swift; sourceTree = "<group>"; };
+		20000000000000000000001D /* MotionAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionAnalyzer.swift; sourceTree = "<group>"; };
+		20000000000000000000001E /* FrameExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameExtractor.swift; sourceTree = "<group>"; };
+		20000000000000000000001F /* VideoLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoLoader.swift; sourceTree = "<group>"; };
+		200000000000000000000020 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		200000000000000000000021 /* ImageProcessing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageProcessing.swift; sourceTree = "<group>"; };
+		200000000000000000000022 /* MathUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathUtils.swift; sourceTree = "<group>"; };
+		200000000000000000000023 /* PixelBuffer+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PixelBuffer+Extensions.swift"; sourceTree = "<group>"; };
+		200000000000000000000024 /* Presets.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Presets.json; sourceTree = "<group>"; };
+		200000000000000000000025 /* blob_threshold.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = blob_threshold.metal; sourceTree = "<group>"; };
+		200000000000000000000026 /* edge_detect.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = edge_detect.metal; sourceTree = "<group>"; };
+		200000000000000000000027 /* motion_diff.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = motion_diff.metal; sourceTree = "<group>"; };
+		200000000000000000000028 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		000000000000000000000006 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		000000000000000000000002 = {
+			isa = PBXGroup;
+			children = (
+				100000000000000000000001 /* BlobTrackerApp */,
+				000000000000000000000003 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		000000000000000000000003 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000000008 /* BlobTrackerApp.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		100000000000000000000001 /* BlobTrackerApp */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000001 /* AppDelegate.swift */,
+				200000000000000000000002 /* BlobTrackerApp.swift */,
+				200000000000000000000003 /* Info.plist */,
+				200000000000000000000004 /* Assets.xcassets */,
+				100000000000000000000002 /* Models */,
+				100000000000000000000003 /* ViewModels */,
+				100000000000000000000004 /* Views */,
+				100000000000000000000005 /* Services */,
+				100000000000000000000006 /* Utils */,
+				100000000000000000000007 /* Shaders */,
+				100000000000000000000008 /* Resources */,
+			);
+			path = BlobTrackerApp;
+			sourceTree = "<group>";
+		};
+		100000000000000000000002 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000005 /* Blob.swift */,
+				200000000000000000000006 /* FrameData.swift */,
+				200000000000000000000007 /* TrackingSettings.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		100000000000000000000003 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000008 /* BlobTrackingViewModel.swift */,
+				200000000000000000000009 /* CameraViewModel.swift */,
+				20000000000000000000000A /* ExportViewModel.swift */,
+				20000000000000000000000B /* VideoViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		100000000000000000000004 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				20000000000000000000000C /* ContentView.swift */,
+				100000000000000000000009 /* Camera */,
+				10000000000000000000000A /* Video */,
+				10000000000000000000000B /* Overlay */,
+				10000000000000000000000C /* Settings */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		100000000000000000000005 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				10000000000000000000000D /* Camera */,
+				10000000000000000000000E /* Video */,
+				10000000000000000000000F /* Tracking */,
+				100000000000000000000010 /* Rendering */,
+				100000000000000000000011 /* Export */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		100000000000000000000006 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000020 /* Constants.swift */,
+				200000000000000000000021 /* ImageProcessing.swift */,
+				200000000000000000000022 /* MathUtils.swift */,
+				200000000000000000000023 /* PixelBuffer+Extensions.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		100000000000000000000007 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000025 /* blob_threshold.metal */,
+				200000000000000000000026 /* edge_detect.metal */,
+				200000000000000000000027 /* motion_diff.metal */,
+			);
+			path = Shaders;
+			sourceTree = "<group>";
+		};
+		100000000000000000000008 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000024 /* Presets.json */,
+				100000000000000000000012 /* SampleVideos */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		100000000000000000000009 /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				20000000000000000000000D /* CameraControls.swift */,
+				20000000000000000000000E /* CameraView.swift */,
+			);
+			path = Camera;
+			sourceTree = "<group>";
+		};
+		10000000000000000000000A /* Video */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000012 /* TimelineView.swift */,
+				200000000000000000000013 /* VideoPickerView.swift */,
+				200000000000000000000014 /* VideoPlayerView.swift */,
+			);
+			path = Video;
+			sourceTree = "<group>";
+		};
+		10000000000000000000000B /* Overlay */ = {
+			isa = PBXGroup;
+			children = (
+				20000000000000000000000F /* BlobOverlayView.swift */,
+				200000000000000000000010 /* DebugOverlayView.swift */,
+			);
+			path = Overlay;
+			sourceTree = "<group>";
+		};
+		10000000000000000000000C /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000011 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		10000000000000000000000D /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000015 /* CameraManager.swift */,
+				200000000000000000000016 /* FrameCapture.swift */,
+			);
+			path = Camera;
+			sourceTree = "<group>";
+		};
+		10000000000000000000000E /* Video */ = {
+			isa = PBXGroup;
+			children = (
+				20000000000000000000001E /* FrameExtractor.swift */,
+				20000000000000000000001F /* VideoLoader.swift */,
+			);
+			path = Video;
+			sourceTree = "<group>";
+		};
+		10000000000000000000000F /* Tracking */ = {
+			isa = PBXGroup;
+			children = (
+				20000000000000000000001B /* BlobDetector.swift */,
+				20000000000000000000001C /* BlobTracker.swift */,
+				20000000000000000000001D /* MotionAnalyzer.swift */,
+			);
+			path = Tracking;
+			sourceTree = "<group>";
+		};
+		100000000000000000000010 /* Rendering */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000019 /* MetalRenderer.swift */,
+				20000000000000000000001A /* OverlayRenderer.swift */,
+			);
+			path = Rendering;
+			sourceTree = "<group>";
+		};
+		100000000000000000000011 /* Export */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000017 /* FrameWriter.swift */,
+				200000000000000000000018 /* VideoExporter.swift */,
+			);
+			path = Export;
+			sourceTree = "<group>";
+		};
+		100000000000000000000012 /* SampleVideos */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000028 /* README.md */,
+			);
+			path = SampleVideos;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		000000000000000000000004 /* BlobTrackerApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00000000000000000000000C /* Build configuration list for PBXNativeTarget "BlobTrackerApp" */;
+			buildPhases = (
+				000000000000000000000005 /* Sources */,
+				000000000000000000000006 /* Frameworks */,
+				000000000000000000000007 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BlobTrackerApp;
+			productName = BlobTrackerApp;
+			productReference = 000000000000000000000008 /* BlobTrackerApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		000000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					000000000000000000000004 = {
+						CreatedOnToolsVersion = 16.2;
+					};
+				};
+			};
+			buildConfigurationList = 000000000000000000000009 /* Build configuration list for PBXProject "BlobTrackerApp" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 000000000000000000000002;
+			productRefGroup = 000000000000000000000003 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				000000000000000000000004 /* BlobTrackerApp */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		000000000000000000000007 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				300000000000000000000022 /* Assets.xcassets in Resources */,
+				300000000000000000000023 /* Presets.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		000000000000000000000005 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				300000000000000000000001 /* AppDelegate.swift in Sources */,
+				300000000000000000000002 /* BlobTrackerApp.swift in Sources */,
+				300000000000000000000003 /* Blob.swift in Sources */,
+				300000000000000000000004 /* FrameData.swift in Sources */,
+				300000000000000000000005 /* TrackingSettings.swift in Sources */,
+				300000000000000000000006 /* BlobTrackingViewModel.swift in Sources */,
+				300000000000000000000007 /* CameraViewModel.swift in Sources */,
+				300000000000000000000008 /* ExportViewModel.swift in Sources */,
+				300000000000000000000009 /* VideoViewModel.swift in Sources */,
+				30000000000000000000000A /* ContentView.swift in Sources */,
+				30000000000000000000000B /* CameraControls.swift in Sources */,
+				30000000000000000000000C /* CameraView.swift in Sources */,
+				30000000000000000000000D /* BlobOverlayView.swift in Sources */,
+				30000000000000000000000E /* DebugOverlayView.swift in Sources */,
+				30000000000000000000000F /* SettingsView.swift in Sources */,
+				300000000000000000000010 /* TimelineView.swift in Sources */,
+				300000000000000000000011 /* VideoPickerView.swift in Sources */,
+				300000000000000000000012 /* VideoPlayerView.swift in Sources */,
+				300000000000000000000013 /* CameraManager.swift in Sources */,
+				300000000000000000000014 /* FrameCapture.swift in Sources */,
+				300000000000000000000015 /* FrameWriter.swift in Sources */,
+				300000000000000000000016 /* VideoExporter.swift in Sources */,
+				300000000000000000000017 /* MetalRenderer.swift in Sources */,
+				300000000000000000000018 /* OverlayRenderer.swift in Sources */,
+				300000000000000000000019 /* BlobDetector.swift in Sources */,
+				30000000000000000000001A /* BlobTracker.swift in Sources */,
+				30000000000000000000001B /* MotionAnalyzer.swift in Sources */,
+				30000000000000000000001C /* FrameExtractor.swift in Sources */,
+				30000000000000000000001D /* VideoLoader.swift in Sources */,
+				30000000000000000000001E /* Constants.swift in Sources */,
+				30000000000000000000001F /* ImageProcessing.swift in Sources */,
+				300000000000000000000020 /* MathUtils.swift in Sources */,
+				300000000000000000000021 /* PixelBuffer+Extensions.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		00000000000000000000000A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				MARKETING_VERSION = 1.0;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		00000000000000000000000B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				MARKETING_VERSION = 1.0;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		00000000000000000000000D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BlobTrackerApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alall.BlobTrackerApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		00000000000000000000000E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BlobTrackerApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alall.BlobTrackerApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		000000000000000000000009 /* Build configuration list for PBXProject "BlobTrackerApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00000000000000000000000A /* Debug */,
+				00000000000000000000000B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		00000000000000000000000C /* Build configuration list for PBXNativeTarget "BlobTrackerApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00000000000000000000000D /* Debug */,
+				00000000000000000000000E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 000000000000000000000001 /* Project object */;
+}
