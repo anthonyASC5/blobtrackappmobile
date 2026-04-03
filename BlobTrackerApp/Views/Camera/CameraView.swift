@@ -30,6 +30,9 @@ struct CameraView: View {
                         RoundedRectangle(cornerRadius: 26, style: .continuous)
                             .strokeBorder(Color.white.opacity(0.12), lineWidth: 1)
                     )
+                    .brightness(settingsStore.settings.brightness)
+                    .contrast(settingsStore.settings.contrast)
+                    .saturation(settingsStore.settings.blackAndWhite ? 0 : settingsStore.settings.saturation)
                     .padding(16)
 
                 BlobOverlayView(
@@ -38,6 +41,35 @@ struct CameraView: View {
                     settings: settingsStore.settings
                 )
                 .padding(16)
+
+                // Middle screen blob color mode button
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            let next: BlobColorMode
+                            switch settingsStore.settings.blobColorMode {
+                            case .white: next = .rainbow
+                            case .rainbow: next = .red
+                            case .red: next = .white
+                            }
+                            settingsStore.settings.blobColorMode = next
+                        }) {
+                            Text(settingsStore.settings.blobColorMode.displayName)
+                                .font(.caption.bold())
+                                .foregroundColor(settingsStore.settings.blobColorMode == .white ? .black : .white)
+                                .padding(12)
+                                .background(
+                                    Rectangle()
+                                        .fill(settingsStore.settings.blobColorMode == .white ? Color.white : settingsStore.settings.blobColorMode == .red ? Color.red : Color.purple)
+                                )
+                                .cornerRadius(12)
+                        }
+                        Spacer()
+                    }
+                    Spacer().frame(height: 260)
+                }
 
                 if settingsStore.settings.showDebugInfo {
                     DebugOverlayView(

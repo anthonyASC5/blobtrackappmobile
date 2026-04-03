@@ -20,6 +20,24 @@ enum DetectionMode: String, CaseIterable, Codable, Identifiable {
     }
 }
 
+enum BlobColorMode: String, CaseIterable, Codable, Identifiable {
+    case white
+    case rainbow
+    case red
+
+    var id: String { rawValue }
+    var displayName: String {
+        switch self {
+        case .white:
+            "White"
+        case .rainbow:
+            "Rainbow"
+        case .red:
+            "Red"
+        }
+    }
+}
+
 struct TrackingSettings: Codable, Equatable {
     var detectionMode: DetectionMode = .binary
     var threshold: Double = 160
@@ -34,6 +52,13 @@ struct TrackingSettings: Codable, Equatable {
     var showBoundingBoxes: Bool = true
     var showTrails: Bool = true
     var showDebugInfo: Bool = true
+
+    var brightness: Double = 0.0
+    var contrast: Double = 1.0
+    var saturation: Double = 1.0
+    var blackAndWhite: Bool = false
+
+    var blobColorMode: BlobColorMode = .rainbow
 
     static let `default` = TrackingSettings()
 }

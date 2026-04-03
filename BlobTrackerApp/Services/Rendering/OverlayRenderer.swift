@@ -49,7 +49,7 @@ enum OverlayRenderer {
         context.setLineWidth(Constants.overlayLineWidth)
 
         for blob in blobs {
-            let color = color(for: blob.id)
+            let color = color(for: blob.id, mode: settings.blobColorMode)
             context.setStrokeColor(color.cgColor)
             context.setFillColor(color.withAlphaComponent(0.18).cgColor)
 
@@ -85,9 +85,16 @@ enum OverlayRenderer {
         context.restoreGState()
     }
 
-    static func color(for id: UUID) -> UIColor {
-        let hash = abs(id.uuidString.hashValue)
-        let hue = CGFloat(hash % 360) / 360.0
-        return UIColor(hue: hue, saturation: 0.85, brightness: 1.0, alpha: 1.0)
+    static func color(for id: UUID, mode: BlobColorMode = .rainbow) -> UIColor {
+        switch mode {
+        case .white:
+            return .white
+        case .rainbow:
+            let hash = abs(id.uuidString.hashValue)
+            let hue = CGFloat(hash % 360) / 360.0
+            return UIColor(hue: hue, saturation: 0.85, brightness: 1.0, alpha: 1.0)
+        case .red:
+            return .red
+        }
     }
 }

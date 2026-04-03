@@ -23,6 +23,9 @@ final class CameraManager: NSObject {  // Class managing camera capture session
     private var currentType: CameraType = .wide  // Current camera type
     private var currentInput: AVCaptureDeviceInput?  // Current input device
 
+    var activePosition: AVCaptureDevice.Position { currentPosition }  // Expose current position
+    var activeType: CameraType { currentType }  // Expose current lens type
+
     func requestAccessIfNeeded() {  // Requests camera access if needed
         let status = AVCaptureDevice.authorizationStatus(for: .video)  // Get current auth status
 
@@ -68,6 +71,9 @@ final class CameraManager: NSObject {  // Class managing camera capture session
         sessionQueue.async { [weak self] in  // Async
             guard let self else { return }  // Weak self
             self.currentPosition = self.currentPosition == .back ? .front : .back  // Toggle position
+            if self.currentPosition == .front {  // Front selfie defaults to wide
+                self.currentType = .wide
+            }
             self.reconfigureCamera()  // Reconfigure with new position
         }
     }

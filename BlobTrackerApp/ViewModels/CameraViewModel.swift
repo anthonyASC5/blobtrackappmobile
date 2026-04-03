@@ -10,6 +10,7 @@ final class CameraViewModel: NSObject, ObservableObject {  // View model for cam
     @Published private(set) var sourceSize: CGSize = Constants.previewPlaceholderSize  // Source frame size
     @Published private(set) var authorizationStatus: AVAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)  // Camera auth status
     @Published var isTrackingEnabled = true  // Flag for tracking on/off
+    @Published var cameraPosition: AVCaptureDevice.Position = .back  // Current camera position
 
     let settingsStore: TrackingSettingsStore  // Reference to settings
 
@@ -30,6 +31,7 @@ final class CameraViewModel: NSObject, ObservableObject {  // View model for cam
 
     func start() {  // Starts camera
         cameraManager.requestAccessIfNeeded()  // Request access
+        cameraPosition = cameraManager.activePosition  // Sync position
     }
 
     func stop() {  // Stops camera
@@ -43,10 +45,15 @@ final class CameraViewModel: NSObject, ObservableObject {  // View model for cam
 
     func flipCamera() {  // Flips camera
         cameraManager.flipCamera()  // Call manager
+        cameraPosition = cameraManager.activePosition == .back ? .front : .back  // update state immediately
+        if cameraPosition == .front {  // Selfie default to wide
+            setCameraType(.wide)
+        }
     }
 
     func setCameraType(_ type: CameraType) {  // Sets camera type
-        cameraManager.setCameraType(type)  // Call manager
+        let resolvedType: CameraType = cameraPosition == .front ? .wide : type  // front only wide
+        cameraManager.setCameraType(resolvedType)  // Call manager
     }
 
     private func bindTrackingState() {
