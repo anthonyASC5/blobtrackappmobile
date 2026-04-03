@@ -1,44 +1,52 @@
-import AVFoundation
-import Combine
-import Foundation
+import AVFoundation  // Import for camera authorization
+import Combine  // Import for publishers
+import Foundation  // Import for basic types
 
-@MainActor
-final class CameraViewModel: NSObject, ObservableObject {
-    @Published private(set) var blobs: [Blob] = []
-    @Published private(set) var framesPerSecond: Double = 0
-    @Published private(set) var processingMilliseconds: Double = 0
-    @Published private(set) var sourceSize: CGSize = Constants.previewPlaceholderSize
-    @Published private(set) var authorizationStatus: AVAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
-    @Published var isTrackingEnabled = true
+@MainActor  // Ensures all code runs on main thread
+final class CameraViewModel: NSObject, ObservableObject {  // View model for camera and tracking
+    @Published private(set) var blobs: [Blob] = []  // Published array of detected blobs
+    @Published private(set) var framesPerSecond: Double = 0  // FPS of processing
+    @Published private(set) var processingMilliseconds: Double = 0  // Processing time
+    @Published private(set) var sourceSize: CGSize = Constants.previewPlaceholderSize  // Source frame size
+    @Published private(set) var authorizationStatus: AVAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)  // Camera auth status
+    @Published var isTrackingEnabled = true  // Flag for tracking on/off
 
-    let settingsStore: TrackingSettingsStore
+    let settingsStore: TrackingSettingsStore  // Reference to settings
 
-    private let cameraManager = CameraManager()
-    private let trackingViewModel: BlobTrackingViewModel
-    private var subscriptions = Set<AnyCancellable>()
+    private let cameraManager = CameraManager()  // Manager for camera
+    private let trackingViewModel: BlobTrackingViewModel  // View model for tracking
+    private var subscriptions = Set<AnyCancellable>()  // Subscriptions for publishers
 
-    var session: AVCaptureSession { cameraManager.session }
+    var session: AVCaptureSession { cameraManager.session }  // Expose session
 
-    init(settingsStore: TrackingSettingsStore) {
-        self.settingsStore = settingsStore
-        trackingViewModel = BlobTrackingViewModel(settingsStore: settingsStore)
-        super.init()
+    init(settingsStore: TrackingSettingsStore) {  // Initializer
+        self.settingsStore = settingsStore  // Set settings
+        trackingViewModel = BlobTrackingViewModel(settingsStore: settingsStore)  // Create tracking VM
+        super.init()  // Call super
 
-        cameraManager.delegate = self
-        bindTrackingState()
+        cameraManager.delegate = self  // Set delegate
+        bindTrackingState()  // Bind state
     }
 
-    func start() {
-        cameraManager.requestAccessIfNeeded()
+    func start() {  // Starts camera
+        cameraManager.requestAccessIfNeeded()  // Request access
     }
 
-    func stop() {
-        cameraManager.stopRunning()
+    func stop() {  // Stops camera
+        cameraManager.stopRunning()  // Stop running
     }
 
-    func toggleTracking() {
-        isTrackingEnabled.toggle()
-        trackingViewModel.setEnabled(isTrackingEnabled)
+    func toggleTracking() {  // Toggles tracking
+        isTrackingEnabled.toggle()  // Toggle flag
+        trackingViewModel.setEnabled(isTrackingEnabled)  // Set in tracking VM
+    }
+
+    func flipCamera() {  // Flips camera
+        cameraManager.flipCamera()  // Call manager
+    }
+
+    func setCameraType(_ type: CameraType) {  // Sets camera type
+        cameraManager.setCameraType(type)  // Call manager
     }
 
     private func bindTrackingState() {
