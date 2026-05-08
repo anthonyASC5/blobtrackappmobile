@@ -23,17 +23,30 @@ struct CameraView: View {
 
     private var liveCameraView: some View {
         GeometryReader { geometry in
+            let effectMode = settingsStore.settings.visualEffectMode
             ZStack(alignment: .topLeading) {
-                CameraPreview(session: viewModel.session)
-                    .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 26, style: .continuous)
-                            .strokeBorder(Color.white.opacity(0.12), lineWidth: 1)
-                    )
-                    .brightness(settingsStore.settings.brightness)
-                    .contrast(settingsStore.settings.contrast)
-                    .saturation(settingsStore.settings.blackAndWhite ? 0 : settingsStore.settings.saturation)
-                    .padding(16)
+                Group {
+                    if effectMode == .lidarScan, let depthImage = viewModel.lidarPreviewImage {
+                        Image(decorative: depthImage, scale: 1, orientation: .up)
+                            .resizable()
+                            .scaledToFit()
+                            .overlay(lidarScanOverlay)
+                    } else {
+                        CameraPreview(session: viewModel.session)
+                            .brightness(settingsStore.settings.brightness)
+                            .contrast(settingsStore.settings.contrast)
+                            .saturation(settingsStore.settings.blackAndWhite ? 0 : settingsStore.settings.saturation)
+                            .hueRotation(.degrees(settingsStore.settings.hueShift))
+                            .modifier(CameraFXPreviewModifier(effectMode: effectMode))
+                    }
+                }
+                .frame(width: geometry.size.width - 32, height: geometry.size.height - 32)
+                .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 26, style: .continuous)
+                        .strokeBorder(Color.white.opacity(0.12), lineWidth: 1)
+                )
+                .padding(16)
 
                 BlobOverlayView(
                     blobs: viewModel.blobs,
@@ -47,24 +60,39 @@ struct CameraView: View {
                     Spacer()
                     HStack {
                         Spacer()
-                        Button(action: {
-                            let next: BlobColorMode
-                            switch settingsStore.settings.blobColorMode {
-                            case .white: next = .rainbow
-                            case .rainbow: next = .red
-                            case .red: next = .white
+                        VStack(spacing: 8) {
+                            BlobColorModeButton(
+                                mode: settingsStore.settings.blobColorMode,
+                                title: settingsStore.settings.blobColorMode.displayName
+                            ) {
+                                let next: BlobColorMode
+                                switch settingsStore.settings.blobColorMode {
+                                case .white: next = .rainbow
+                                case .rainbow: next = .red
+                                case .red: next = .neonBlue
+                                case .neonBlue: next = .white
+                                }
+                                settingsStore.settings.blobColorMode = next
                             }
-                            settingsStore.settings.blobColorMode = next
-                        }) {
-                            Text(settingsStore.settings.blobColorMode.displayName)
-                                .font(.caption.bold())
-                                .foregroundColor(settingsStore.settings.blobColorMode == .white ? .black : .white)
-                                .padding(12)
-                                .background(
-                                    Rectangle()
-                                        .fill(settingsStore.settings.blobColorMode == .white ? Color.white : settingsStore.settings.blobColorMode == .red ? Color.red : Color.purple)
-                                )
-                                .cornerRadius(12)
+                            .frame(width: 116)
+
+                            Button(action: viewModel.toggleRecording) {
+                                Image(systemName: viewModel.isRecording ? "stop.fill" : "record.circle")
+                                    .font(.system(size: 11, weight: .bold))
+                                    .foregroundStyle(viewModel.isRecording ? .white : .red)
+                                    .frame(width: 28, height: 28)
+                                    .background {
+                                        Circle()
+                                            .fill(viewModel.isRecording ? Color.red : Color.white.opacity(0.92))
+                                    }
+                                    .overlay {
+                                        Circle()
+                                            .strokeBorder(Color.white.opacity(viewModel.isRecording ? 0.0 : 0.18), lineWidth: 1)
+                                    }
+                                    .shadow(color: .black.opacity(0.12), radius: 5, y: 2)
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityLabel(viewModel.isRecording ? "Stop Recording" : "Record Video")
                         }
                         Spacer()
                     }
@@ -91,6 +119,41 @@ struct CameraView: View {
         }
     }
 
+    private var lidarScanOverlay: some View {
+        GeometryReader { proxy in
+            LinearGradient(
+                colors: [
+                    Color.clear,
+                    Color.white.opacity(0.20),
+                    Color.clear
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .frame(height: 3)
+            .offset(y: proxy.size.height * 0.35)
+            .blendMode(.screen)
+            .overlay(alignment: .top) {
+                Rectangle()
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                Color.white.opacity(0.0),
+                                Color.white.opacity(0.35),
+                                Color.white.opacity(0.0)
+                            ],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .frame(height: 1)
+                    .offset(y: proxy.size.height * 0.35)
+                    .blendMode(.screen)
+            }
+        }
+        .allowsHitTesting(false)
+    }
+
     private var permissionView: some View {
         VStack(spacing: 16) {
             Image(systemName: "camera.fill")
@@ -113,6 +176,26 @@ struct CameraView: View {
     }
 }
 
+private struct CameraFXPreviewModifier: ViewModifier {
+    let effectMode: VisualEffectMode
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        switch effectMode {
+        case .off:
+            content
+        case .nightVision:
+            content
+                .saturation(0.12)
+                .contrast(1.75)
+                .brightness(-0.06)
+                .colorMultiply(Color(red: 0.18, green: 0.82, blue: 0.24))
+        case .lidarScan:
+            content
+        }
+    }
+}
+
 private struct CameraPreview: UIViewRepresentable {
     let session: AVCaptureSession
 
@@ -120,11 +203,14 @@ private struct CameraPreview: UIViewRepresentable {
         let view = PreviewView()
         view.previewLayer.videoGravity = .resizeAspect
         view.previewLayer.session = session
+        // Set the preview layer immediately so the live feed fills the SwiftUI container correctly.
+        view.previewLayer.frame = view.bounds
         return view
     }
 
     func updateUIView(_ uiView: PreviewView, context: Context) {
         uiView.previewLayer.session = session
+        uiView.previewLayer.frame = uiView.bounds
     }
 }
 
@@ -135,5 +221,11 @@ private final class PreviewView: UIView {
 
     var previewLayer: AVCaptureVideoPreviewLayer {
         layer as! AVCaptureVideoPreviewLayer
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        // Keep the AVCapture preview layer locked to the UIView bounds during layout changes.
+        previewLayer.frame = bounds
     }
 }

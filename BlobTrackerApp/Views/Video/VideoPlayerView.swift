@@ -1,3 +1,4 @@
+// THIS IS THE VIDEO IMPORT PAGE AND IT IS HIDDEN IN THE APP. THIS IS FOR THE NEXT VERSION AND WILL STAY PRIVATE UNTIL FULLY TESTED
 import AVKit
 import SwiftUI
 
@@ -23,6 +24,10 @@ struct VideoPlayerView: View {
                 if viewModel.hasVideo {
                     VideoPlayer(player: viewModel.player)
                         .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+                        .brightness(settingsStore.settings.brightness)
+                        .contrast(settingsStore.settings.contrast)
+                        .saturation(settingsStore.settings.blackAndWhite ? 0 : settingsStore.settings.saturation)
+                        .hueRotation(.degrees(settingsStore.settings.hueShift))
 
                     BlobOverlayView(
                         blobs: viewModel.blobs,

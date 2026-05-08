@@ -1,3 +1,5 @@
+import CoreGraphics
+import CoreImage
 import CoreVideo
 import Foundation
 
@@ -14,6 +16,10 @@ struct BinaryImage {
 }
 
 enum ImageProcessing {
+    private static let ciContext = CIContext(options: [
+        .useSoftwareRenderer: false
+    ])
+
     static func grayscale(from pixelBuffer: CVPixelBuffer, downsampleFactor: Int) -> GrayscaleImage {
         let factor = max(downsampleFactor, 1)
         let sourceWidth = CVPixelBufferGetWidth(pixelBuffer)
@@ -150,5 +156,77 @@ enum ImageProcessing {
     static func threshold(_ image: GrayscaleImage, level: UInt8) -> BinaryImage {
         let pixels = image.pixels.map { $0 >= level ? UInt8(1) : UInt8(0) }
         return BinaryImage(width: image.width, height: image.height, pixels: pixels)
+    }
+
+    static func applyEditorAdjustments(to cgImage: CGImage, settings: TrackingSettings) -> CGImage? {
+        let input = CIImage(cgImage: cgImage)
+        let saturation = settings.blackAndWhite ? 0 : settings.saturation
+        let brightness = settings.brightness
+        let contrast = settings.contrast
+        let gamma = max(settings.gamma, 0.01)
+        let hueAngle = settings.hueShift * (.pi / 180.0)
+        let sharpness = max(settings.sharpness, 0)
+
+        let adjusted = input
+            .applyingFilter("CIColorControls", parameters: [
+                kCIInputBrightnessKey: brightness,
+                kCIInputContrastKey: contrast,
+                kCIInputSaturationKey: saturation
+            ])
+            .applyingFilter("CIGammaAdjust", parameters: [
+                "inputPower": gamma
+            ])
+            .applyingFilter("CIHueAdjust", parameters: [
+                kCIInputAngleKey: hueAngle
+            ])
+            .applyingFilter("CISharpenLuminance", parameters: [
+                kCIInputSharpnessKey: sharpness
+            ])
+
+        return applyVisualEffect(to: adjusted, settings: settings)
+    }
+
+    static func applyVisualEffect(to cgImage: CGImage, settings: TrackingSettings) -> CGImage? {
+        let input = CIImage(cgImage: cgImage)
+        return applyVisualEffect(to: input, settings: settings)
+    }
+
+    private static func applyVisualEffect(to input: CIImage, settings: TrackingSettings) -> CGImage? {
+        let output: CIImage
+
+        switch settings.visualEffectMode {
+        case .off:
+            output = input
+        case .nightVision:
+            output = input
+                .applyingFilter("CIPhotoEffectNoir")
+                .applyingFilter("CIColorMonochrome", parameters: [
+                    kCIInputColorKey: CIColor(red: 0.0, green: 1.0, blue: 0.2),
+                    kCIInputIntensityKey: 0.95
+                ])
+                .applyingFilter("CIColorControls", parameters: [
+                    kCIInputBrightnessKey: -0.08,
+                    kCIInputContrastKey: 1.9,
+                    kCIInputSaturationKey: 0.0
+                ])
+        case .lidarScan:
+            output = input
+                .applyingFilter("CIPhotoEffectMono")
+                .applyingFilter("CIColorControls", parameters: [
+                    kCIInputBrightnessKey: 0.12,
+                    kCIInputContrastKey: 2.45,
+                    kCIInputSaturationKey: 0.0
+                ])
+                .applyingFilter("CIHighlightShadowAdjust", parameters: [
+                    "inputShadowAmount": 0.0,
+                    "inputHighlightAmount": 1.0
+                ])
+                .applyingFilter("CIVignette", parameters: [
+                    kCIInputIntensityKey: 0.42,
+                    kCIInputRadiusKey: max(input.extent.width, input.extent.height) * 0.7
+                ])
+        }
+
+        return ciContext.createCGImage(output, from: output.extent)
     }
 }

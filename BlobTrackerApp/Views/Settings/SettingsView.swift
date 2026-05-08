@@ -59,68 +59,28 @@ struct SettingsView: View {  // View for settings
             Section("Overlay") {  // Section for overlay
                 Toggle("Show Bounding Boxes", isOn: $settingsStore.settings.showBoundingBoxes)  // Toggle
                 Toggle("Show Trails", isOn: $settingsStore.settings.showTrails)  // Toggle
+                Toggle("Show Blob Circles", isOn: $settingsStore.settings.showBlobCircles)  // Toggle
                 Toggle("Show Debug Overlay", isOn: $settingsStore.settings.showDebugInfo)  // Toggle
             }
 
             Section("About") {  // Section for about
-                NavigationLink(destination: SettingsAboutView()) {  // Link to about view
+                NavigationLink(destination: AboutView()) {  // Link to about view
                     Text("About the App")  // Text
                 }
             }
         }
         .navigationTitle("Tracking Settings")  // Title
         .navigationBarTitleDisplayMode(.inline)  // Mode
-    }
-
-}
-
-struct SettingsAboutView: View {  // Local about view to avoid missing symbol
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                Text("About Blob Tracker")
-                    .font(.largeTitle)
-                    .bold()
-                    .foregroundColor(.pink)
-
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("Founder/Developer: A. L.")
-                        .font(.title2)
-                        .foregroundColor(.primary)
-
-                    Text("App Est. April 2026")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                }
-
-                Divider()
-
-                Text("This is my web app suite.")
-                    .font(.body)
-                    .foregroundColor(.primary)
-
-                Link("Lall Suite", destination: URL(string: "https://anthonyasc5.github.io/lallsuite/")!)
-                    .font(.headline)
-                    .foregroundColor(.blue)
-
-                Text("This is blob tracker online!")
-                    .font(.body)
-                    .foregroundColor(.primary)
-
-                Link("Blobber Track", destination: URL(string: "https://anthonyasc5.github.io/blobbertrack/index.html")!)
-                    .font(.headline)
-                    .foregroundColor(.blue)
-
-                Spacer()
+        .onChange(of: settingsStore.settings.detectionMode) { _, newMode in
+            if newMode == .motion {
+                settingsStore.settings.applyMotionDefaults()
             }
-            .padding()
         }
-        .navigationTitle("About")
-        .navigationBarTitleDisplayMode(.inline)
-        .background(Color.white.edgesIgnoringSafeArea(.all))
     }
+
 }
 
+extension SettingsView {
     private func slider(title: String, value: Binding<Double>, range: ClosedRange<Double>) -> some View {  // Function for slider
         VStack(alignment: .leading, spacing: 6) {  // VStack
             HStack {  // HStack
@@ -133,4 +93,4 @@ struct SettingsAboutView: View {  // Local about view to avoid missing symbol
             Slider(value: value, in: range)  // Slider
         }
     }
-
+}

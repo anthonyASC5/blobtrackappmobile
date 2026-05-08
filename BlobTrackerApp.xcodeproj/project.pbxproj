@@ -29,6 +29,7 @@
 		300000000000000000000014 /* FrameCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000016 /* FrameCapture.swift */; };
 		300000000000000000000015 /* FrameWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000017 /* FrameWriter.swift */; };
 		300000000000000000000016 /* VideoExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000018 /* VideoExporter.swift */; };
+		300000000000000000000027 /* LiveVideoRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000002C /* LiveVideoRecorder.swift */; };
 		300000000000000000000017 /* MetalRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000019 /* MetalRenderer.swift */; };
 		300000000000000000000018 /* OverlayRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000001A /* OverlayRenderer.swift */; };
 		300000000000000000000019 /* BlobDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000001B /* BlobDetector.swift */; };
@@ -40,6 +41,10 @@
 		30000000000000000000001F /* ImageProcessing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000021 /* ImageProcessing.swift */; };
 		300000000000000000000020 /* MathUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000022 /* MathUtils.swift */; };
 		300000000000000000000021 /* PixelBuffer+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000023 /* PixelBuffer+Extensions.swift */; };
+		300000000000000000000024 /* IntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000029 /* IntroView.swift */; };
+		300000000000000000000025 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000002A /* AboutView.swift */; };
+		300000000000000000000026 /* BlobColorModeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000002B /* BlobColorModeButton.swift */; };
+		300000000000000000000028 /* DepthMapRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000002D /* DepthMapRenderer.swift */; };
 		300000000000000000000022 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000004 /* Assets.xcassets */; };
 		300000000000000000000023 /* Presets.json in Resources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000024 /* Presets.json */; };
 /* End PBXBuildFile section */
@@ -70,6 +75,7 @@
 		200000000000000000000016 /* FrameCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameCapture.swift; sourceTree = "<group>"; };
 		200000000000000000000017 /* FrameWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameWriter.swift; sourceTree = "<group>"; };
 		200000000000000000000018 /* VideoExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoExporter.swift; sourceTree = "<group>"; };
+		20000000000000000000002C /* LiveVideoRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveVideoRecorder.swift; sourceTree = "<group>"; };
 		200000000000000000000019 /* MetalRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalRenderer.swift; sourceTree = "<group>"; };
 		20000000000000000000001A /* OverlayRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayRenderer.swift; sourceTree = "<group>"; };
 		20000000000000000000001B /* BlobDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlobDetector.swift; sourceTree = "<group>"; };
@@ -86,6 +92,10 @@
 		200000000000000000000026 /* edge_detect.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = edge_detect.metal; sourceTree = "<group>"; };
 		200000000000000000000027 /* motion_diff.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = motion_diff.metal; sourceTree = "<group>"; };
 		200000000000000000000028 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		200000000000000000000029 /* IntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroView.swift; sourceTree = "<group>"; };
+		20000000000000000000002A /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		20000000000000000000002B /* BlobColorModeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlobColorModeButton.swift; sourceTree = "<group>"; };
+		20000000000000000000002D /* DepthMapRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepthMapRenderer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,10 +168,12 @@
 			isa = PBXGroup;
 			children = (
 				20000000000000000000000C /* ContentView.swift */,
+				200000000000000000000029 /* IntroView.swift */,
 				100000000000000000000009 /* Camera */,
 				10000000000000000000000A /* Video */,
 				10000000000000000000000B /* Overlay */,
 				10000000000000000000000C /* Settings */,
+				100000000000000000000013 /* Shared */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -182,6 +194,7 @@
 			isa = PBXGroup;
 			children = (
 				200000000000000000000020 /* Constants.swift */,
+				20000000000000000000002D /* DepthMapRenderer.swift */,
 				200000000000000000000021 /* ImageProcessing.swift */,
 				200000000000000000000022 /* MathUtils.swift */,
 				200000000000000000000023 /* PixelBuffer+Extensions.swift */,
@@ -240,8 +253,17 @@
 			isa = PBXGroup;
 			children = (
 				200000000000000000000011 /* SettingsView.swift */,
+				20000000000000000000002A /* AboutView.swift */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		100000000000000000000013 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				20000000000000000000002B /* BlobColorModeButton.swift */,
+			);
+			path = Shared;
 			sourceTree = "<group>";
 		};
 		10000000000000000000000D /* Camera */ = {
@@ -286,6 +308,7 @@
 			children = (
 				200000000000000000000017 /* FrameWriter.swift */,
 				200000000000000000000018 /* VideoExporter.swift */,
+				20000000000000000000002C /* LiveVideoRecorder.swift */,
 			);
 			path = Export;
 			sourceTree = "<group>";
@@ -388,6 +411,7 @@
 				300000000000000000000014 /* FrameCapture.swift in Sources */,
 				300000000000000000000015 /* FrameWriter.swift in Sources */,
 				300000000000000000000016 /* VideoExporter.swift in Sources */,
+				300000000000000000000027 /* LiveVideoRecorder.swift in Sources */,
 				300000000000000000000017 /* MetalRenderer.swift in Sources */,
 				300000000000000000000018 /* OverlayRenderer.swift in Sources */,
 				300000000000000000000019 /* BlobDetector.swift in Sources */,
@@ -399,6 +423,10 @@
 				30000000000000000000001F /* ImageProcessing.swift in Sources */,
 				300000000000000000000020 /* MathUtils.swift in Sources */,
 				300000000000000000000021 /* PixelBuffer+Extensions.swift in Sources */,
+				300000000000000000000024 /* IntroView.swift in Sources */,
+				300000000000000000000025 /* AboutView.swift in Sources */,
+				300000000000000000000026 /* BlobColorModeButton.swift in Sources */,
+				300000000000000000000028 /* DepthMapRenderer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

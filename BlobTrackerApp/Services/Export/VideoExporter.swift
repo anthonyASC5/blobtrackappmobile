@@ -1,3 +1,4 @@
+// THIS IS THE VIDEO IMPORT PAGE AND IT IS HIDDEN IN THE APP. THIS IS FOR THE NEXT VERSION AND WILL STAY PRIVATE UNTIL FULLY TESTED
 @preconcurrency import AVFoundation
 import Photos
 import UIKit
@@ -132,6 +133,7 @@ final class VideoExporter: @unchecked Sendable {
                     }
 
                     writer.startSession(atSourceTime: .zero)
+                    let writerBox = WriterBox(writer)
 
                     let detector = BlobDetector()
                     let tracker = BlobTracker()
@@ -198,12 +200,12 @@ final class VideoExporter: @unchecked Sendable {
                         audioInput.markAsFinished()
                     }
 
-                    writer.finishWriting {
-                        if writer.status == .completed {
+                    writer.finishWriting { [writerBox] in
+                        if writerBox.isCompleted {
                             progressHandler(1)
                             continuation.resume(returning: outputURL)
                         } else {
-                            continuation.resume(throwing: writer.error ?? VideoExporterError.exportFailed)
+                            continuation.resume(throwing: writerBox.failureError ?? VideoExporterError.exportFailed)
                         }
                     }
                 } catch {
@@ -293,5 +295,21 @@ final class VideoExporter: @unchecked Sendable {
 
         context.draw(cgImage, in: CGRect(x: 0, y: 0, width: cgImage.width, height: cgImage.height))
         return pixelBuffer
+    }
+}
+
+private final class WriterBox: @unchecked Sendable {
+    let writer: AVAssetWriter
+
+    init(_ writer: AVAssetWriter) {
+        self.writer = writer
+    }
+
+    var isCompleted: Bool {
+        writer.status == .completed
+    }
+
+    var failureError: Error? {
+        writer.error
     }
 }

@@ -4,6 +4,7 @@ struct ContentView: View {  // Main content view with tab navigation
     @StateObject private var settingsStore: TrackingSettingsStore  // State object for tracking settings
     @StateObject private var cameraViewModel: CameraViewModel  // View model for camera functionality
     @StateObject private var videoViewModel: VideoViewModel  // View model for video playback
+    private let isVideoSectionHidden = true
 
     init() {  // Custom initializer to set up view models
         let settingsStore = TrackingSettingsStore()  // Create shared settings store
@@ -21,11 +22,13 @@ struct ContentView: View {  // Main content view with tab navigation
                 Label("Live", systemImage: "camera.viewfinder")  // Label with text and icon
             }
 
-            NavigationStack {  // Navigation stack for video player view
-                VideoPlayerView(viewModel: videoViewModel, settingsStore: settingsStore)  // Video player view
-            }
-            .tabItem {  // Tab item for video section
-                Label("Video", systemImage: "film.stack")  // Label with text and icon
+            if !isVideoSectionHidden {
+                NavigationStack {  // Navigation stack for video player view
+                    VideoPlayerView(viewModel: videoViewModel, settingsStore: settingsStore)  // Video player view
+                }
+                .tabItem {  // Tab item for video section
+                    Label("Video", systemImage: "film.stack")  // Label with text and icon
+                }
             }
 
             NavigationStack {  // Navigation stack for settings view

@@ -58,7 +58,7 @@ final class BlobTrackingViewModel: ObservableObject, @unchecked Sendable {
         }
     }
 
-    func process(frame: FrameData) {
+    func process(frame: FrameData, completion: (([Blob]) -> Void)? = nil) {
         processingQueue.async {
             guard self.isEnabled else { return }
 
@@ -87,6 +87,8 @@ final class BlobTrackingViewModel: ObservableObject, @unchecked Sendable {
                 self.processingMilliseconds = elapsed
                 self.framesPerSecond = fps
             }
+
+            completion?(blobs)
         }
     }
 }

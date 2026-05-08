@@ -52,5 +52,34 @@
       "showTrails": false,
       "showDebugInfo": true
     }
+  },
+  {
+    "name": "BW Glow",
+    "settings": {
+      "detectionMode": "binary",
+      "threshold": 150,
+      "motionDifferenceThreshold": 28,
+      "edgeThreshold": 40,
+      "minimumBlobArea": 18,
+      "maximumBlobArea": 22000,
+      "downsampleFactor": 4,
+      "blurRadius": 1,
+      "maxTrackingDistance": 0.18,
+      "trailLength": 10,
+      "showBoundingBoxes": true,
+      "showTrails": false,
+      "showDebugInfo": true,
+      "brightness": 0.0,
+      "contrast": 1.85,
+      "saturation": 0.0,
+      "sharpness": 0.15,
+      "gamma": 1.0,
+      "hueShift": 0.0,
+      "glow": 90,
+      "showBlobCircles": true,
+      "blackAndWhite": true,
+      "blobColorMode": "white",
+      "visualEffectMode": "off"
+    }
   }
 ]

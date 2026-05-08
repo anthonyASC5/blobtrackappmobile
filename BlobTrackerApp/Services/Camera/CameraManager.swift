@@ -1,167 +1,298 @@
-import AVFoundation  // Import for camera and video capture
-import Foundation  // Import for basic types
+import AVFoundation
+import Foundation
 
-protocol CameraManagerDelegate: AnyObject {  // Protocol for camera events
-    func cameraManager(_ manager: CameraManager, didOutput frame: FrameData)  // Called when frame is captured
-    func cameraManager(_ manager: CameraManager, didUpdateAuthorization status: AVAuthorizationStatus)  // Called when auth changes
+protocol CameraManagerDelegate: AnyObject {
+    func cameraManager(_ manager: CameraManager, didOutput frame: FrameData)
+    func cameraManager(_ manager: CameraManager, didUpdateAuthorization status: AVAuthorizationStatus)
 }
 
-enum CameraType {  // Enum for camera lens types
-    case wide  // Wide angle lens
-    case ultraWide  // Ultra wide lens
+enum CameraType {
+    case wide
+    case ultraWide
 }
 
-final class CameraManager: NSObject {  // Class managing camera capture session
-    let session = AVCaptureSession()  // The capture session
+final class CameraManager: NSObject {
+    let session = AVCaptureSession()
 
-    weak var delegate: CameraManagerDelegate?  // Delegate for events
+    weak var delegate: CameraManagerDelegate?
 
-    private let sessionQueue = DispatchQueue(label: "\(Constants.cameraQueueLabel).session")  // Queue for session operations
-    private let videoOutputQueue = DispatchQueue(label: "\(Constants.cameraQueueLabel).frames")  // Queue for frame processing
-    private var isConfigured = false  // Flag if session is configured
-    private var currentPosition: AVCaptureDevice.Position = .back  // Current camera position
-    private var currentType: CameraType = .wide  // Current camera type
-    private var currentInput: AVCaptureDeviceInput?  // Current input device
+    private let sessionQueue = DispatchQueue(label: "\(Constants.cameraQueueLabel).session")
+    private let videoOutputQueue = DispatchQueue(label: "\(Constants.cameraQueueLabel).frames")
 
-    var activePosition: AVCaptureDevice.Position { currentPosition }  // Expose current position
-    var activeType: CameraType { currentType }  // Expose current lens type
+    private var isConfigured = false
+    private var currentPosition: AVCaptureDevice.Position = .back
+    private var currentType: CameraType = .wide
+    private var currentEffectMode: VisualEffectMode = .off
+    private var currentInput: AVCaptureDeviceInput?
+    private var videoOutput: AVCaptureVideoDataOutput?
+    private var depthOutput: AVCaptureDepthDataOutput?
+    private var synchronizer: AVCaptureDataOutputSynchronizer?
 
-    func requestAccessIfNeeded() {  // Requests camera access if needed
-        let status = AVCaptureDevice.authorizationStatus(for: .video)  // Get current auth status
+    var activePosition: AVCaptureDevice.Position { currentPosition }
+    var activeType: CameraType { currentType }
 
-        switch status {  // Handle different auth statuses
-        case .authorized:  // Already authorized
-            delegate?.cameraManager(self, didUpdateAuthorization: status)  // Notify delegate
+    func requestAccessIfNeeded() {
+        let status = AVCaptureDevice.authorizationStatus(for: .video)
 
-        case .notDetermined:  // Not determined yet
-            AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in  // Request access
-                guard let self else { return }  // Weak self check
-                DispatchQueue.main.async {  // Dispatch to main
-                    self.delegate?.cameraManager(self, didUpdateAuthorization: granted ? .authorized : .denied)  // Notify
+        switch status {
+        case .authorized:
+            delegate?.cameraManager(self, didUpdateAuthorization: status)
+
+        case .notDetermined:
+            AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
+                guard let self else { return }
+                DispatchQueue.main.async {
+                    self.delegate?.cameraManager(self, didUpdateAuthorization: granted ? .authorized : .denied)
                 }
             }
 
-        case .denied, .restricted:  // Denied or restricted
-            delegate?.cameraManager(self, didUpdateAuthorization: status)  // Notify
+        case .denied, .restricted:
+            delegate?.cameraManager(self, didUpdateAuthorization: status)
 
-        @unknown default:  // Unknown status
-            delegate?.cameraManager(self, didUpdateAuthorization: .restricted)  // Treat as restricted
+        @unknown default:
+            delegate?.cameraManager(self, didUpdateAuthorization: .restricted)
         }
     }
 
-    func startRunning() {  // Starts the capture session
-        sessionQueue.async { [weak self] in  // Async on session queue
-            guard let self else { return }  // Weak self
-            self.configureIfNeeded()  // Configure if not done
+    func startRunning() {
+        sessionQueue.async { [weak self] in
+            guard let self else { return }
+            self.configureIfNeeded()
 
-            guard AVCaptureDevice.authorizationStatus(for: .video) == .authorized else { return }  // Check auth
-            guard !self.session.isRunning else { return }  // Check if running
-            self.session.startRunning()  // Start session
+            guard AVCaptureDevice.authorizationStatus(for: .video) == .authorized else { return }
+            guard !self.session.isRunning else { return }
+            self.session.startRunning()
         }
     }
 
-    func stopRunning() {  // Stops the capture session
-        sessionQueue.async { [weak self] in  // Async on session queue
-            guard let self, self.session.isRunning else { return }  // Check if running
-            self.session.stopRunning()  // Stop session
+    func stopRunning() {
+        sessionQueue.async { [weak self] in
+            guard let self, self.session.isRunning else { return }
+            self.session.stopRunning()
         }
     }
 
-    func flipCamera() {  // Flips between front and back camera
-        sessionQueue.async { [weak self] in  // Async
-            guard let self else { return }  // Weak self
-            self.currentPosition = self.currentPosition == .back ? .front : .back  // Toggle position
-            if self.currentPosition == .front {  // Front selfie defaults to wide
+    func flipCamera() {
+        sessionQueue.async { [weak self] in
+            guard let self else { return }
+            guard self.currentEffectMode != .lidarScan else { return }
+            self.currentPosition = self.currentPosition == .back ? .front : .back
+            if self.currentPosition == .front {
                 self.currentType = .wide
             }
-            self.reconfigureCamera()  // Reconfigure with new position
+            self.reconfigureSession()
         }
     }
 
-    func setCameraType(_ type: CameraType) {  // Sets the camera lens type
-        sessionQueue.async { [weak self] in  // Async
-            guard let self else { return }  // Weak self
-            self.currentType = type  // Set type
-            self.reconfigureCamera()  // Reconfigure with new type
+    func setCameraType(_ type: CameraType) {
+        sessionQueue.async { [weak self] in
+            guard let self else { return }
+            guard self.currentEffectMode != .lidarScan else { return }
+            self.currentType = type
+            self.reconfigureSession()
         }
     }
 
-    private func reconfigureCamera() {  // Reconfigures the camera with current settings
-        guard isConfigured else { return }  // Check if configured
-        session.beginConfiguration()  // Begin config
-        defer { session.commitConfiguration() }  // Commit at end
+    func setVisualEffectMode(_ mode: VisualEffectMode) {
+        sessionQueue.async { [weak self] in
+            guard let self else { return }
+            guard self.currentEffectMode != mode else { return }
+            let needsReconfigure = (self.currentEffectMode == .lidarScan) || (mode == .lidarScan)
+            self.currentEffectMode = mode
 
-        // Remove current input
-        if let currentInput {  // If has input
-            session.removeInput(currentInput)  // Remove it
+            if mode == .lidarScan {
+                self.currentPosition = .back
+                self.currentType = .wide
+            }
+
+            if needsReconfigure {
+                self.reconfigureSession()
+            }
         }
-
-        // Add new input
-        guard let device = self.deviceForCurrentSettings(),  // Get device
-              let input = try? AVCaptureDeviceInput(device: device),  // Create input
-              session.canAddInput(input) else {  // Check can add
-            return  // Return if not
-        }
-
-        session.addInput(input)  // Add input
-        currentInput = input  // Store input
     }
 
-    private func configureIfNeeded() {  // Configures session if not done
-        guard !isConfigured else { return }  // Check flag
-        session.beginConfiguration()  // Begin config
-        session.sessionPreset = .high  // Set preset
-
-        defer {  // Defer commit
-            session.commitConfiguration()  // Commit
-            isConfigured = true  // Set flag
+    private func configureIfNeeded() {
+        guard !isConfigured else { returplean }
+        session.beginConfiguration()
+        defer {
+            session.commitConfiguration()
+            isConfigured = true
         }
 
-        guard  // Guard for device and input
-            let device = deviceForCurrentSettings(),  // Get device
-            let input = try? AVCaptureDeviceInput(device: device),  // Create input
-            session.canAddInput(input)  // Check can add
-        else {
-            return  // Return if fail
+        session.sessionPreset = .high
+
+        guard configureCurrentInput() else { return }
+        configureCurrentOutputs()
+    }
+
+    private func reconfigureSession() {
+        guard isConfigured else { return }
+
+        session.beginConfiguration()
+        defer { session.commitConfiguration() }
+
+        removeCurrentPipeline()
+        guard configureCurrentInput() else { return }
+        configureCurrentOutputs()
+    }
+
+    private func removeCurrentPipeline() {
+        if let currentInput {
+            session.removeInput(currentInput)
         }
 
-        session.addInput(input)  // Add input
-        currentInput = input  // Store
+        session.outputs.forEach { session.removeOutput($0) }
+        currentInput = nil
+        videoOutput = nil
+        depthOutput = nil
+        synchronizer = nil
+    }
 
-        let output = AVCaptureVideoDataOutput()  // Create output
-        output.alwaysDiscardsLateVideoFrames = true  // Discard late frames
-        output.videoSettings = [  // Set video settings
+    private func configureCurrentInput() -> Bool {
+        guard let device = deviceForCurrentSettings() else {
+            return false
+        }
+
+        if currentEffectMode == .lidarScan && currentPosition == .back {
+            _ = configureLiDARDevice(device)
+        }
+
+        guard let input = try? AVCaptureDeviceInput(device: device), session.canAddInput(input) else {
+            return false
+        }
+
+        session.addInput(input)
+        currentInput = input
+        return true
+    }
+
+    private func configureCurrentOutputs() {
+        let videoOutput = AVCaptureVideoDataOutput()
+        videoOutput.alwaysDiscardsLateVideoFrames = true
+        videoOutput.videoSettings = [
             kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA
         ]
-        output.setSampleBufferDelegate(self, queue: videoOutputQueue)  // Set delegate
 
-        guard session.canAddOutput(output) else { return }  // Check can add output
-        session.addOutput(output)  // Add output
+        guard session.canAddOutput(videoOutput) else { return }
+        session.addOutput(videoOutput)
 
-        if let connection = output.connection(with: .video), connection.isVideoRotationAngleSupported(90) {  // Set rotation
+        if currentEffectMode == .lidarScan,
+           currentPosition == .back,
+           let depthOutput = makeDepthOutput(),
+           session.canAddOutput(depthOutput) {
+            session.addOutput(depthOutput)
+
+            let synchronizer = AVCaptureDataOutputSynchronizer(dataOutputs: [videoOutput, depthOutput])
+            synchronizer.setDelegate(self, queue: videoOutputQueue)
+
+            self.videoOutput = videoOutput
+            self.depthOutput = depthOutput
+            self.synchronizer = synchronizer
+        } else {
+            videoOutput.setSampleBufferDelegate(self, queue: videoOutputQueue)
+            self.videoOutput = videoOutput
+            self.depthOutput = nil
+            self.synchronizer = nil
+        }
+
+        if let connection = videoOutput.connection(with: .video),
+           connection.isVideoRotationAngleSupported(90) {
             connection.videoRotationAngle = 90
         }
     }
 
-    private func deviceForCurrentSettings() -> AVCaptureDevice? {  // Gets device for current settings
-        let deviceType: AVCaptureDevice.DeviceType  // Device type var
-        switch currentType {  // Switch on type
-        case .wide:  // Wide
-            deviceType = .builtInWideAngleCamera  // Set to wide
-        case .ultraWide:  // Ultra wide
-            deviceType = .builtInUltraWideCamera  // Set to ultra wide
+    private func makeDepthOutput() -> AVCaptureDepthDataOutput? {
+        let depthOutput = AVCaptureDepthDataOutput()
+        depthOutput.isFilteringEnabled = true
+        depthOutput.alwaysDiscardsLateDepthData = true
+        return depthOutput
+    }
+
+    private func configureLiDARDevice(_ device: AVCaptureDevice) -> Bool {
+        guard
+            let format = device.formats.last(where: { format in
+                format.formatDescription.dimensions.width >= 640 &&
+                format.formatDescription.mediaSubType.rawValue == kCVPixelFormatType_420YpCbCr8BiPlanarFullRange &&
+                !format.isVideoBinned &&
+                !format.supportedDepthDataFormats.isEmpty
+            }),
+            let depthFormat = format.supportedDepthDataFormats.last(where: { depthFormat in
+                depthFormat.formatDescription.mediaSubType.rawValue == kCVPixelFormatType_DepthFloat16
+            })
+        else {
+            return false
         }
-        return AVCaptureDevice.default(deviceType, for: .video, position: currentPosition)  // Return default device
+
+        do {
+            try device.lockForConfiguration()
+            device.activeFormat = format
+            device.activeDepthDataFormat = depthFormat
+            device.unlockForConfiguration()
+            return true
+        } catch {
+            return false
+        }
+    }
+
+    private func deviceForCurrentSettings() -> AVCaptureDevice? {
+        if currentEffectMode == .lidarScan,
+           currentPosition == .back,
+           let lidar = AVCaptureDevice.default(.builtInLiDARDepthCamera, for: .video, position: .back) {
+            return lidar
+        }
+
+        let deviceType: AVCaptureDevice.DeviceType
+        switch currentType {
+        case .wide:
+            deviceType = .builtInWideAngleCamera
+        case .ultraWide:
+            deviceType = .builtInUltraWideCamera
+        }
+        return AVCaptureDevice.default(deviceType, for: .video, position: currentPosition)
     }
 }
 
-extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {  // Extension for delegate
-    func captureOutput(  // Delegate method for frame output
+extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
+    func captureOutput(
         _ output: AVCaptureOutput,
         didOutput sampleBuffer: CMSampleBuffer,
         from connection: AVCaptureConnection
     ) {
-        guard let frame = FrameCapture.makeFrameData(from: sampleBuffer) else { return }  // Make frame data
-        delegate?.cameraManager(self, didOutput: frame)  // Notify delegate
+        guard let frame = FrameCapture.makeFrameData(from: sampleBuffer) else { return }
+        delegate?.cameraManager(self, didOutput: frame)
+    }
+}
+
+extension CameraManager: AVCaptureDataOutputSynchronizerDelegate {
+    func dataOutputSynchronizer(
+        _ synchronizer: AVCaptureDataOutputSynchronizer,
+        didOutput synchronizedDataCollection: AVCaptureSynchronizedDataCollection
+    ) {
+        guard
+            let videoOutput,
+            let syncedVideoData = synchronizedDataCollection.synchronizedData(for: videoOutput) as? AVCaptureSynchronizedSampleBufferData,
+            !syncedVideoData.sampleBufferWasDropped,
+            let pixelBuffer = CMSampleBufferGetImageBuffer(syncedVideoData.sampleBuffer)
+        else {
+            return
+        }
+
+        let timestamp = CMSampleBufferGetPresentationTimeStamp(syncedVideoData.sampleBuffer)
+        var depthPixelBuffer: CVPixelBuffer?
+
+        if let depthOutput,
+           let syncedDepthData = synchronizedDataCollection.synchronizedData(for: depthOutput) as? AVCaptureSynchronizedDepthData,
+           !syncedDepthData.depthDataWasDropped {
+            depthPixelBuffer = syncedDepthData.depthData.converting(toDepthDataType: kCVPixelFormatType_DepthFloat16).depthDataMap
+        }
+
+        delegate?.cameraManager(
+            self,
+            didOutput: FrameData(
+                pixelBuffer: pixelBuffer,
+                timestamp: timestamp,
+                depthPixelBuffer: depthPixelBuffer
+            )
+        )
     }
 }
